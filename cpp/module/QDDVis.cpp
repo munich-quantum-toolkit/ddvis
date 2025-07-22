@@ -18,6 +18,7 @@
 
 #include "dd/Export.hpp"
 #include "dd/Operations.hpp"
+#include "dd/StateGeneration.hpp"
 #include "qasm3/Importer.hpp"
 
 Napi::Object QDDVis::Init(Napi::Env env, Napi::Object exports) {
