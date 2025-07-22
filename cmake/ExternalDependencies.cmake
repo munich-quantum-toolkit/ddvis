@@ -12,9 +12,11 @@ include(FetchContent)
 set(FETCH_PACKAGES "")
 
 # cmake-format: off
-set(MQT_CORE_VERSION 3.0.2
+set(MQT_CORE_MINIMUM_VERSION 3.1.0
     CACHE STRING "MQT Core version")
-set(MQT_CORE_REV "9b6e01482cc77f48c828d988407ee4f8e4e93b56"
+set(MQT_CORE_VERSION 3.1.0
+    CACHE STRING "MQT Core version")
+set(MQT_CORE_REV "1f95d92320b116497d6f516a085fbe3bb8693960"
     CACHE STRING "MQT Core identifier (tag, branch or commit hash)")
 set(MQT_CORE_REPO_OWNER "cda-tum"
     CACHE STRING "MQT Core repository owner (change when using a fork)")
@@ -23,7 +25,7 @@ FetchContent_Declare(
   mqt-core
   GIT_REPOSITORY https://github.com/${MQT_CORE_REPO_OWNER}/mqt-core.git
   GIT_TAG ${MQT_CORE_REV}
-  FIND_PACKAGE_ARGS ${MQT_CORE_VERSION})
+  FIND_PACKAGE_ARGS ${MQT_CORE_MINIMUM_VERSION})
 list(APPEND FETCH_PACKAGES mqt-core)
 
 # Make all declared dependencies available.
