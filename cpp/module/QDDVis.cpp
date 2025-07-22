@@ -230,7 +230,7 @@ Napi::Value QDDVis::Load(const Napi::CallbackInfo& info) {
       if (sim.p != nullptr) {
         dd->decRef(sim);
       }
-      sim = dd->makeZeroState(qc.getNqubits());
+      sim = dd::makeZeroState(qc.getNqubits(), *dd);
       for (unsigned int i = 0; i < opNum; i++) { // apply some operations
         stepForward();
       }
@@ -258,7 +258,7 @@ Napi::Value QDDVis::Load(const Napi::CallbackInfo& info) {
     if (sim.p != nullptr) {
       dd->decRef(sim);
     }
-    sim = dd->makeZeroState(qc.getNqubits());
+    sim = dd::makeZeroState(qc.getNqubits(), *dd);
   }
   return state;
 }
@@ -286,7 +286,7 @@ Napi::Value QDDVis::ToStart(const Napi::CallbackInfo& info) {
     return Napi::Boolean::New(env, false); // nothing changed
   try {
     dd->decRef(sim);
-    sim       = dd->makeZeroState(qc.getNqubits());
+    sim       = dd::makeZeroState(qc.getNqubits(), *dd);
     atInitial = true;
     atEnd     = false; // now we are definitely not at the end (if there were no
                        // operation, so atInitial and atEnd could be true at the
@@ -593,7 +593,7 @@ Napi::Value QDDVis::ToLine(const Napi::CallbackInfo& info) {
         state.Set("noGoingBack", Napi::Boolean::New(env, true));
 
         dd->decRef(sim);
-        sim = dd->makeZeroState(qc.getNqubits());
+        sim = dd::makeZeroState(qc.getNqubits(), *dd);
         dd->incRef(sim);
         atInitial = true;
         atEnd     = false;
