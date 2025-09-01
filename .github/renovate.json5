@@ -1,19 +1,25 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
-  extends: ["config:recommended", ":gitSignOff"],
+  extends: ["config:recommended", ":gitSignOff", "helpers:pinGitHubActionDigests"],
   prHourlyLimit: 10,
-  enabledManagers: ["github-actions", "pre-commit", "npm"],
+  enabledManagers: ["cargo", "github-actions", "npm", "pep621", "pre-commit"],
   "pre-commit": {
     enabled: true
   },
   lockFileMaintenance: {
-    "enabled": true,
-    "automerge": true,
+    enabled: true,
+    commitMessagePrefix: "⬆\uFE0F\uD83D\uDD12\uFE0F",
+    automerge: true
   },
   configMigration: true,
   labels: ["dependencies"],
   schedule: ["every weekend"],
   packageRules: [
+    {
+      matchManagers: ["cargo"],
+      addLabels: ["rust"],
+      commitMessagePrefix: "⬆\uFE0F\uD83E\uDD80"
+    },
     {
       matchManagers: ["github-actions"],
       addLabels: ["github-actions"],
@@ -22,12 +28,17 @@
     {
       matchManagers: ["npm"],
       addLabels: ["javascript"],
-      commitMessagePrefix: "⬆\uD83D\uDCDC"
+      commitMessagePrefix: "⬆\uFE0F\uD83D\uDCDC"
+    },
+    {
+      matchManagers: ["pep621"],
+      addLabels: ["python"],
+      commitMessagePrefix: "⬆\uFE0F\uD83D\uDC0D"
     },
     {
       matchManagers: ["pre-commit"],
       addLabels: ["pre-commit"],
-      commitMessagePrefix: "⬆\uFE0F\uD83E\uDE9D",
+      commitMessagePrefix: "⬆\uFE0F\uD83E\uDE9D"
     },
     {
       description: "Automerge patch updates",
@@ -36,7 +47,7 @@
     },
     {
       description: "Automerge minor updates for stable dependencies",
-      matchManagers: ["npm", "pre-commit"],
+      matchManagers: ["cargo", "npm", "pep621", "pre-commit"],
       matchUpdateTypes: ["minor", "patch"],
       matchCurrentVersion: "!/^0/",
       automerge: true
