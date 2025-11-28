@@ -15,19 +15,20 @@ ci:
 repos:
   # Standard hooks
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: "v6.0.0"
+    rev: v6.0.0
     hooks:
       - id: check-added-large-files
+        args: ["--maxkb=2048"]
       - id: check-case-conflict
-      - id: check-docstring-first
+      - id: check-vcs-permalinks
       - id: check-merge-conflict
       - id: check-symlinks
+      - id: check-json
       - id: check-toml
       - id: check-yaml
       - id: debug-statements
       - id: end-of-file-fixer
       - id: mixed-line-ending
-      - id: requirements-txt-fixer
       - id: trailing-whitespace
 
   # Handling unwanted unicode characters
