@@ -73,11 +73,3 @@ repos:
     hooks:
       - id: prettier
         types_or: [yaml, markdown, html, css, scss, javascript, json]
-
-  # Python linting using ruff
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.14.6
-    hooks:
-      - id: ruff-check
-        args: ["--fix", "--show-fixes"]
-      - id: ruff-format
