@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2023 - 2025 Chair for Design Automation, TUM
- * Copyright (c) 2025 Munich Quantum Software Company GmbH
+ * Copyright (c) 2023 - 2026 Chair for Design Automation, TUM
+ * Copyright (c) 2025 - 2026 Munich Quantum Software Company GmbH
  * All rights reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -29,7 +29,7 @@
 
 class QDDVis : public Napi::ObjectWrap<QDDVis> {
 public:
-  static Napi::Object Init(Napi::Env evn, Napi::Object exports);
+  static Napi::Object Init(Napi::Env env, Napi::Object exports);
   explicit QDDVis(const Napi::CallbackInfo& info);
 
 private:
