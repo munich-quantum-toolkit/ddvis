@@ -64,7 +64,7 @@ function _getKey(req) {
  * @private
  */
 function _getTargetManager(req) {
-  let managerId = "sim"; //take sim per default for back-compatability;
+  let managerId = "sim"; //take sim per default for back-compatibility;
 
   //different API-calls can have a different request-structure
   if (req && req.targetManager) managerId = req.targetManager;

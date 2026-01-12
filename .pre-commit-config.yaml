@@ -39,11 +39,10 @@ repos:
       - id: fix-smartquotes
 
   # Check for spelling
-  - repo: https://github.com/codespell-project/codespell
-    rev: "v2.4.1"
+  - repo: https://github.com/adhtruong/mirrors-typos
+    rev: v1.42.0
     hooks:
-      - id: codespell
-        args: ["-L", "wille,linz,inflight,ket", "--skip", "*.ipynb"]
+      - id: typos
 
   # Check for license headers
   - repo: https://github.com/emzeat/mz-lictools

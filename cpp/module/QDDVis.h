@@ -29,7 +29,7 @@
 
 class QDDVis : public Napi::ObjectWrap<QDDVis> {
 public:
-  static Napi::Object Init(Napi::Env evn, Napi::Object exports);
+  static Napi::Object Init(Napi::Env env, Napi::Object exports);
   explicit QDDVis(const Napi::CallbackInfo& info);
 
 private:

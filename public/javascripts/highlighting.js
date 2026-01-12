@@ -239,7 +239,7 @@ class HighlightManager {
       while (ops > this._highlightedOps) {
         this.increaseHighlighting();
       }
-    } //else ops === this._highlighedOps so nothing to do
+    } //else ops === this._highlightedOps so nothing to do
   }
 
   /**Sets the highlighting completely new, regardless of the previous highlights. The previous functions are just more
