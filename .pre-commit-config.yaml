@@ -40,7 +40,7 @@ repos:
 
   # Check for spelling
   - repo: https://github.com/adhtruong/mirrors-typos
-    rev: v1.42.0
+    rev: v1.42.1
     hooks:
       - id: typos
 
@@ -68,14 +68,14 @@ repos:
 
   # Format configuration files with prettier
   - repo: https://github.com/rbubley/mirrors-prettier
-    rev: v3.8.0
+    rev: v3.8.1
     hooks:
       - id: prettier
         types_or: [yaml, markdown, html, css, scss, javascript, json]
 
   # Python linting using ruff
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.14.13
+    rev: v0.14.14
     hooks:
       - id: ruff-check
       - id: ruff-format
