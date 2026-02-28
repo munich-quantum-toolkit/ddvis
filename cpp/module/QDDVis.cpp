@@ -425,7 +425,7 @@ Napi::Value QDDVis::Next(const Napi::CallbackInfo& info) {
     } else if ((*iterator)->getType() == qc::Measure) {
       auto qubits = (*iterator)->getTargets();
       auto cbits  = dynamic_cast<qc::NonUnitaryOperation*>(iterator->get())
-                       ->getClassics();
+                        ->getClassics();
       auto totalMeasurements = qubits.size();
       auto qubitToMeasure    = qubits.front();
       auto cbitToStore       = cbits.front();
