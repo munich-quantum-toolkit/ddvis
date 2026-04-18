@@ -34,6 +34,7 @@
     "py\\.typed",
     ".*build.*",
     "Dockerfile",
-    ".*\\.webmanifest"
+    ".*\\.webmanifest",
+    "LICENSE"
   ]
 }
