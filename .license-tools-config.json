@@ -35,6 +35,6 @@
     ".*build.*",
     "Dockerfile",
     ".*\\.webmanifest",
-    "LICENSE"
+    "(^|/)LICENSE$"
   ]
 }
