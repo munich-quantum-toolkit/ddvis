@@ -31,8 +31,6 @@ repos:
     hooks:
       - id: check-github-workflows
         priority: 0
-      - id: check-readthedocs
-        priority: 0
 
   ## Check for common capitalization mistakes
   - repo: local
