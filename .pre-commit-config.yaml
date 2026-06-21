@@ -105,8 +105,8 @@ repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.15.17
     hooks:
-      - id: ruff-format
-        priority: 5
       - id: ruff-check
         require_serial: true
+        priority: 5
+      - id: ruff-format
         priority: 6
