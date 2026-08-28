@@ -19,6 +19,7 @@
 #include "dd/Export.hpp"
 #include "dd/Operations.hpp"
 #include "dd/StateGeneration.hpp"
+#include "ir/operations/IfElseOperation.hpp"
 #include "qasm3/Importer.hpp"
 
 Napi::Object QDDVis::Init(Napi::Env env, Napi::Object exports) {
@@ -76,11 +77,9 @@ void QDDVis::stepForward() {
   const auto& op = **iterator;
   if (op.isUnitary()) {
     sim = dd::applyUnitaryOperation(op, sim, *dd);
-  } else if (op.isClassicControlledOperation()) {
-    const auto& classicOp =
-        dynamic_cast<const qc::ClassicControlledOperation&>(op);
-    sim =
-        dd::applyClassicControlledOperation(classicOp, sim, *dd, measurements);
+  } else if (op.isIfElseOperation()) {
+    const auto& ifElseOp = dynamic_cast<const qc::IfElseOperation&>(op);
+    sim = dd::applyIfElseOperation(ifElseOp, sim, *dd, measurements);
   }
   ++iterator; // advance iterator
   position++;
@@ -108,24 +107,16 @@ void QDDVis::stepBack() {
   position--;
 
   dd::MatrixDD currDD{};
-  if ((*iterator)->isClassicControlledOperation()) {
-    auto startIndex = static_cast<dd::Qubit>((*iterator)->getParameter().at(0));
-    auto length = static_cast<std::size_t>((*iterator)->getParameter().at(1));
-    auto expectedValue =
-        static_cast<std::size_t>((*iterator)->getParameter().at(2));
-
-    std::size_t value = 0;
-    for (std::size_t i = 0; i < length; ++i) {
-      value |= (static_cast<std::size_t>(measurements[startIndex + i]) << i);
+  if ((*iterator)->isIfElseOperation()) {
+    auto inverseIfElse = dynamic_cast<const qc::IfElseOperation&>(**iterator);
+    if (auto* thenOp = inverseIfElse.getThenOp(); thenOp != nullptr) {
+      thenOp->invert();
     }
-
-    if (value == expectedValue) {
-      currDD =
-          dd::getInverseDD(*iterator->get(),
-                           *dd); // get the inverse of the current operation
-    } else {
-      currDD = dd->makeIdent();
+    if (auto* elseOp = inverseIfElse.getElseOp(); elseOp != nullptr) {
+      elseOp->invert();
     }
+    sim = dd::applyIfElseOperation(inverseIfElse, sim, *dd, measurements);
+    return;
   } else {
     currDD = dd::getInverseDD(*iterator->get(),
                               *dd); // get the inverse of the current operation
@@ -211,7 +202,7 @@ Napi::Value QDDVis::Load(const Napi::CallbackInfo& info) {
   position  = 0;
   // resize the DD package so that it can hold as many variables
   dd->resize(qc.getNqubits());
-  measurements.resize(qc.getNqubits());
+  measurements.resize(qc.getNcbits());
 
   state.Set("numOfOperations",
             Napi::Number::New(env, static_cast<double>(qc.getNops())));

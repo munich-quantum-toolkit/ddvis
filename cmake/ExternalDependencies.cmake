@@ -12,7 +12,7 @@ include(FetchContent)
 set(FETCH_PACKAGES "")
 
 # cmake-format: off
-set(MQT_CORE_MINIMUM_VERSION 3.1.0
+set(MQT_CORE_MINIMUM_VERSION 3.9.0
     CACHE STRING "MQT Core version")
 set(MQT_CORE_VERSION 3.9.0
     CACHE STRING "MQT Core version")
