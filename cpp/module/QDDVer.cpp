@@ -562,7 +562,8 @@ Napi::Value QDDVer::Next(const Napi::CallbackInfo& info) {
     auto& iterator = algo1 ? iterator1 : iterator2;
     auto& qc       = algo1 ? qc1 : qc2;
     if (iterator != qc.end() && ((*iterator)->getType() == qc::Measure ||
-                                 (*iterator)->getType() == qc::Reset)) {
+                                 (*iterator)->getType() == qc::Reset ||
+                                 (*iterator)->isIfElseOperation())) {
       state.Set("nextIsIrreversible", Napi::Boolean::New(env, true));
     }
     return state;
@@ -638,7 +639,8 @@ Napi::Value QDDVer::ToEnd(const Napi::CallbackInfo& info) {
     auto&              atEnd    = algo1 ? atEnd1 : atEnd2;
     while (!atEnd) {
       if ((*iterator)->getType() == qc::Measure ||
-          (*iterator)->getType() == qc::Reset) {
+          (*iterator)->getType() == qc::Reset ||
+          (*iterator)->isIfElseOperation()) {
         state.Set("nextIsIrreversible", Napi::Boolean::New(env, true));
         break;
       }
