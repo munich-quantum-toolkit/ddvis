@@ -14,9 +14,9 @@ set(FETCH_PACKAGES "")
 # cmake-format: off
 set(MQT_CORE_MINIMUM_VERSION 3.9.0
     CACHE STRING "MQT Core version")
-set(MQT_CORE_VERSION 3.9.0
+set(MQT_CORE_VERSION 3.9.2
     CACHE STRING "MQT Core version")
-set(MQT_CORE_REV "9d4820d564e585759ada3757950cce9a7f836f1a"
+set(MQT_CORE_REV "46b9b0f2daffdce89637e08de624744f114f9701"
     CACHE STRING "MQT Core identifier (tag, branch or commit hash)")
 set(MQT_CORE_REPO_OWNER "cda-tum"
     CACHE STRING "MQT Core repository owner (change when using a fork)")
