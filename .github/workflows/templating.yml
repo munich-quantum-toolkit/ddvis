@@ -34,4 +34,5 @@ jobs:
           has-changelog-and-upgrade-guide: false
           synchronize-contribution-guide: false
           synchronize-documentation-utilities: false
+          synchronize-gitignore: false
           synchronize-installation-guide: false
