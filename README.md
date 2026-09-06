@@ -95,7 +95,7 @@ npm run-script run
 ## System Requirements
 
 To run DDVis locally, you will require a C++ compiler with support for C++17,
-CMake, Node.js, and NPM.
+CMake 3.28 or newer, Node.js, and NPM.
 
 ## Cite This
 
