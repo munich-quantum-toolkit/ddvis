@@ -1,5 +1,6 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![CI](https://img.shields.io/github/actions/workflow/status/munich-quantum-toolkit/ddvis/ci.yml?branch=main&style=flat-square&logo=github&label=ci)](https://github.com/munich-quantum-toolkit/ddvis/actions/workflows/ci.yml)
+[![CD](https://img.shields.io/github/actions/workflow/status/munich-quantum-toolkit/ddvis/deploy.yml?style=flat-square&logo=github&label=cd)](https://github.com/munich-quantum-toolkit/ddvis/actions/workflows/deploy.yml)
 
 <p align="center">
   <a href="https://mqt.readthedocs.io">
