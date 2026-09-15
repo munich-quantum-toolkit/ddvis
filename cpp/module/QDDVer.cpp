@@ -89,7 +89,7 @@ void QDDVer::stepForward(bool algo1) {
       return; // no further steps possible
 
     const auto& op2 = **iterator2;
-    sim             = dd::applyUnitaryOperation(op2, sim, *dd, {}, false);
+    sim = dd::applyUnitaryOperation(*op2.getInverted(), sim, *dd, {}, false);
     ++iterator2; // advance iterator
     position2++;
     // qc2.end() is after the last operation in the iterator
@@ -135,7 +135,7 @@ void QDDVer::stepBack(bool algo1) {
     position2--;
 
     const auto& op2 = **iterator2;
-    sim = dd::applyUnitaryOperation(*op2.getInverted(), sim, *dd, {}, false);
+    sim             = dd::applyUnitaryOperation(op2, sim, *dd, {}, false);
   }
 }
 
