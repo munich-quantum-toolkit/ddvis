@@ -19,6 +19,8 @@
 #include "dd/Export.hpp"
 #include "qasm3/Importer.hpp"
 
+#include <cmath>
+
 Napi::Object QDDVer::Init(Napi::Env env, Napi::Object exports) {
   Napi::HandleScope scope(env);
 
@@ -89,7 +91,7 @@ void QDDVer::stepForward(bool algo1) {
       return; // no further steps possible
 
     const auto& op2 = **iterator2;
-    sim             = dd::applyUnitaryOperation(op2, sim, *dd, {}, false);
+    sim = dd::applyUnitaryOperation(*op2.getInverted(), sim, *dd, {}, false);
     ++iterator2; // advance iterator
     position2++;
     // qc2.end() is after the last operation in the iterator
@@ -135,7 +137,7 @@ void QDDVer::stepBack(bool algo1) {
     position2--;
 
     const auto& op2 = **iterator2;
-    sim = dd::applyUnitaryOperation(*op2.getInverted(), sim, *dd, {}, false);
+    sim             = dd::applyUnitaryOperation(op2, sim, *dd, {}, false);
   }
 }
 
@@ -672,47 +674,54 @@ Napi::Value QDDVer::ToEnd(const Napi::CallbackInfo& info) {
  *              int: determines to which position the iterator should point at
  * after this call bool: whether the function should be applied to algo1 or
  * algo2
- * @return true if the DD changed, false otherwise (nothing was done or an error
- * occurred)
+ * @return An object indicating whether the DD changed and how many operations
+ * were processed.
  */
 Napi::Value QDDVer::ToLine(const Napi::CallbackInfo& info) {
-  Napi::Env         env = info.Env();
-  Napi::HandleScope scope(env);
+  Napi::Env    env   = info.Env();
+  Napi::Object state = Napi::Object::New(env);
+  state.Set("changed", false);
+  state.Set("nops", 0);
 
   // check if the correct parameters have been passed
   if (info.Length() < 2) {
     Napi::RangeError::New(env, "Need 2 (unsigned int, bool) arguments!")
         .ThrowAsJavaScriptException();
-    return Napi::Boolean::New(env, false);
+    return state;
   }
   if (!info[0].IsNumber()) { // line number/position
     Napi::TypeError::New(env, "arg1: unsigned int expected!")
         .ThrowAsJavaScriptException();
-    return Napi::Boolean::New(env, false);
+    return state;
   }
   if (!info[1].IsBoolean()) { // algo1
-    Napi::TypeError::New(env, "arg1: Boolean expected!")
+    Napi::TypeError::New(env, "arg2: Boolean expected!")
         .ThrowAsJavaScriptException();
+    return state;
   }
 
-  auto       param = static_cast<unsigned int>(info[0].As<Napi::Number>());
-  const auto algo1 = static_cast<bool>(info[0].As<Napi::Boolean>());
-  if (algo1) {
-    if (param > qc1.getNops())
-      // we can't go further than to the end
-      param = static_cast<unsigned int>(qc1.getNops());
-  } else {
-    if (param > qc2.getNops())
-      // we can't go further than to the end
-      param = static_cast<unsigned int>(qc2.getNops());
+  const auto param = info[0].As<Napi::Number>().DoubleValue();
+  if (!std::isfinite(param) || param < 0 || std::floor(param) != param) {
+    Napi::RangeError::New(env, "arg1: non-negative integer expected!")
+        .ThrowAsJavaScriptException();
+    return state;
   }
-  const unsigned int targetPos = param;
+  const auto algo1 = static_cast<bool>(info[1].As<Napi::Boolean>());
+  if (!(algo1 ? ready1 : ready2)) {
+    Napi::Error::New(env, algo1 ? "No algorithm loaded as algo1!"
+                                : "No algorithm loaded as algo2!")
+        .ThrowAsJavaScriptException();
+    return state;
+  }
+  const auto maxPos = static_cast<unsigned int>((algo1 ? qc1 : qc2).getNops());
+  const auto targetPos =
+      param > maxPos ? maxPos : static_cast<unsigned int>(param);
+  const auto startPos = algo1 ? position1 : position2;
+  if (startPos == targetPos)
+    return state;
 
   try {
     if (algo1) {
-      if (position1 == targetPos)
-        return Napi::Boolean::New(env, false); // nothing changed
-
       // only one of the two loops can be entered
       while (position1 > targetPos)
         stepBack(true);
@@ -727,9 +736,6 @@ Napi::Value QDDVer::ToLine(const Napi::CallbackInfo& info) {
         atEnd1 = true;
 
     } else {
-      if (position2 == targetPos)
-        return Napi::Boolean::New(env, false); // nothing changed
-
       // only one of the two loops can be entered
       while (position2 > targetPos)
         stepBack(false);
@@ -744,7 +750,10 @@ Napi::Value QDDVer::ToLine(const Napi::CallbackInfo& info) {
         atEnd2 = true;
     }
 
-    return Napi::Boolean::New(env, true); // something changed
+    state.Set("changed", true);
+    state.Set("nops", targetPos > startPos ? targetPos - startPos
+                                           : startPos - targetPos);
+    return state;
 
   } catch (const std::exception& e) {
     std::stringstream ss{};
@@ -753,7 +762,7 @@ Napi::Value QDDVer::ToLine(const Napi::CallbackInfo& info) {
     const auto msg = ss.str();
     std::cout << msg << std::endl;
     Napi::Error::New(env, msg).ThrowAsJavaScriptException();
-    return Napi::Boolean::New(env, false);
+    return state;
   }
 }
 
